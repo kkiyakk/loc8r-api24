@@ -74,7 +74,7 @@ app.use(function(err, req, res, next) {
 });
 
 // Render용 포트
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 500;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
