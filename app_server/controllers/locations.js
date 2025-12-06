@@ -5,7 +5,6 @@ const apiOptions = {
 };
 if(process.env.NODE_ENV === 'production'){
   apiOptions.server  = 'https://loc8r-api24-zfy0.onrender.com';
-  production: true
 }
 
 const homelist = (req, res) => {
