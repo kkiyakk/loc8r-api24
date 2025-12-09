@@ -13,6 +13,19 @@ const apiRouter = require('./app_api/routes/index');
 
 var app = express();
 
+const cors = require('cors');
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 //For legacy browser support
+};
+app.use(cors(corsOptions));
+
+app.use('/api', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-requested-with, Content-type, Accept, Authorization');
+  next();
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'pug');
