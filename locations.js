@@ -22,14 +22,14 @@ const homelist = (req, res) => {
 
   request(requestOptions, (err, response, body) => {
     if (err || !response) {
-      console.error("Homelist API Error:", err);
+      console.error("API request failed:", err);
       return renderHomepage(req, res, []);
     }
 
     const { statusCode } = response;
-    let data = [];
 
-    if (statusCode === 200 && Array.isArray(body) && body.length) {
+    let data = [];
+    if (statusCode === 200 && Array.isArray(body)) {
       data = body.map(item => {
         item.distance = formatDistance(item.distance);
         return item;
@@ -40,9 +40,9 @@ const homelist = (req, res) => {
   });
 };
 
+
 const renderHomepage = (req, res, responseBody) => {
   let message = null;
-
   if (!(responseBody instanceof Array)) {
     message = "API lookup error";
     responseBody = [];
@@ -58,11 +58,12 @@ const renderHomepage = (req, res, responseBody) => {
       title: 'Loc8r',
       strapLine: 'Find places to work with wifi near you!'
     },
-    sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about.",
+    sidebar: "Looking for wifi and a seat? Loc8r helps you find places...",
     locations: responseBody,
     message
   });
 };
+
 
 const formatDistance = (distance) => {
   let thisDistance = 0;
@@ -79,12 +80,10 @@ const formatDistance = (distance) => {
 const renderDetailPage = (req, res, location) => {
   res.render('location-info', {
     title: location.name,
-    pageHeader: {
-      title: location.name
-    },
+    pageHeader: { title: location.name },
     sidebar: {
-      context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop.',
-      callToAction: "If you've been and you like it - or if you don't - please leave a review."
+      context: 'is on Loc8r because it has wifi...',
+      callToAction: "If you've been and you like it..."
     },
     location
   });
@@ -96,17 +95,14 @@ const showError = (req, res, status) => {
 
   if (status === 404) {
     title = '404, page not found';
-    content = 'Oh dear. Looks like you can\'t find this page.';
+    content = 'Sorry, that page cannot be found.';
   } else {
     title = `${status}, something's gone wrong`;
-    content = 'Something, somewhere, has gone just a little bit wrong.';
+    content = 'Something went wrong.';
   }
 
   res.status(status);
-  res.render('generic-text', {
-    title,
-    content
-  });
+  res.render('generic-text', { title, content });
 };
 
 const renderReviewForm = (req, res, { name }) => {
@@ -126,10 +122,7 @@ const getLocationInfo = (req, res, callback) => {
   };
 
   request(requestOptions, (err, response, body) => {
-    if (err || !response) {
-      console.error("getLocationInfo API error:", err);
-      return showError(req, res, 500);
-    }
+    if (err || !response) return showError(req, res, 500);
 
     const { statusCode } = response;
 
@@ -147,20 +140,21 @@ const getLocationInfo = (req, res, callback) => {
 };
 
 const locationInfo = (req, res) => {
-  getLocationInfo(req, res,
-    (req, res, responseData) => renderDetailPage(req, res, responseData)
+  getLocationInfo(req, res, (req, res, responseData) =>
+    renderDetailPage(req, res, responseData)
   );
 };
 
 const addReview = (req, res) => {
-  getLocationInfo(req, res,
-    (req, res, responseData) => renderReviewForm(req, res, responseData)
+  getLocationInfo(req, res, (req, res, responseData) =>
+    renderReviewForm(req, res, responseData)
   );
 };
 
 const doAddReview = (req, res) => {
   const locationid = req.params.locationid;
   const path = `/api/locations/${locationid}/reviews`;
+
   const postdata = {
     author: req.body.name,
     rating: parseInt(req.body.rating, 10),
@@ -178,9 +172,7 @@ const doAddReview = (req, res) => {
   }
 
   request(requestOptions, (err, response, body) => {
-    if (err || !response) {
-      return showError(req, res, 500);
-    }
+    if (err || !response) return showError(req, res, 500);
 
     const { statusCode } = response;
 
