@@ -23,12 +23,10 @@ block content
               each facility in location.facilities
                 span.badge.badge-warning= facility
 
-
     .col-12.col-md-4
       p.lead= sidebar
 
-      block scripts 
-        script(src='/build/runtime.e4985b6c090739db.js')
-        script(src='/build/polyfills.05600847d04151be.js')
-        script(src='/build/main.e969332d0acde78a.js')
-     
+block scripts
+  script(src='/build/runtime.e4985b6c090739db.js')
+  script(src='/build/polyfills.05600847d04151be.js')
+  script(src='/build/main.e969332d0acde78a.js')
